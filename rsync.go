@@ -214,7 +214,7 @@ func (r Rsync) Run() error {
 func NewRsync(source, destination string, port int, options RsyncOptions) *Rsync {
 	var arguments []string
 	if port > 0 {
-		arguments = append(getArguments(options), "-p "+strconv.Itoa(port), source, destination)
+		arguments = append(getArguments(options), "-e ssh -p "+strconv.Itoa(port), source, destination)
 	} else {
 		arguments = append(getArguments(options), source, destination)
 	}
