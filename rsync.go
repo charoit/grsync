@@ -211,8 +211,13 @@ func (r Rsync) Run() error {
 }
 
 // NewRsync returns task with described options
-func NewRsync(source, destination string, options RsyncOptions) *Rsync {
-	arguments := append(getArguments(options), source, destination)
+func NewRsync(source, destination string, port int, options RsyncOptions) *Rsync {
+	var arguments []string
+	if port > 0 {
+		arguments = append(getArguments(options), "-p "+strconv.Itoa(port), source, destination)
+	} else {
+		arguments = append(getArguments(options), source, destination)
+	}
 	return &Rsync{
 		Source:      source,
 		Destination: destination,
@@ -533,7 +538,7 @@ func getArguments(options RsyncOptions) []string {
 	if options.OutFormat {
 		arguments = append(arguments, "--out-format=\"%n\"")
 	}
-	
+
 	if len(options.Exclude) > 0 {
 		for _, pattern := range options.Exclude {
 			arguments = append(arguments, fmt.Sprintf("--exclude=%s", pattern))
